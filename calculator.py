@@ -1,4 +1,4 @@
-from sympy import symbols, Eq, solve
+from sympy import symbols, Eq, solve, simplify
 from sympy.abc import s
 
 R1, R2, C1, C2 = symbols('R1 R2 C1 C2', positive=True)

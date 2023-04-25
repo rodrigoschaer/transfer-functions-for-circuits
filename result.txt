@@ -1,0 +1,1 @@
+Transfer function: H(s) = -I2*R2*(C1*R1*s + 1)/(R1*s*(C1*V1 + C2*V1 - C2*V2))
