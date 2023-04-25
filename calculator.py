@@ -1,11 +1,16 @@
-import sympy as sp
+from sympy import symbols, Eq, solve
+from sympy.abc import s
 
+R1, R2, C1, C2 = symbols('R1 R2 C1 C2', positive=True)
+V1, V2, I1, I2, Vout = symbols('V1 V2 I1 I2 Vout')
 
-# Given a circuit of four net currents
-I1, I2, I3, I4 = sp.symbols('I1 I2 I3 I4')
+eq1 = Eq(s*(C1+C2)*V1 + (1/R1 + s*C1)*I1 - s*C2*V2, 0)
+eq2 = Eq(-s*C2*V1 + (1/R2 + s*C2)*I2 + V2/(R2*s), 0)
+eq3 = Eq(Vout/R2, I2)
 
-equation_one = sp.Eq(I1 + I2, I3) # This means I1 + I2 = I3
-equation_two = sp.Eq(I2 + I4, I3)
+# Solve the equations for the transfer function
+sol = solve([eq1, eq2, eq3], [Vout, I1])
+H = simplify(sol[Vout]/sol[I1])
 
-solution = sp.solve([equation_one, equation_two], sp.symbols('V1 V2 V3'))
-V1, V2, V3 = solution.values()
+# Print the transfer function
+print('Transfer function: H(s) =', H)
