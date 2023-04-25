@@ -2,12 +2,18 @@
 
 First, create the local environment using:
 
-`python -m venv env`
+```bash
+python -m venv env
+```
 
 Then, source the environment to use command line:
 
-`source env/bin/activate`
+```bash
+source env/bin/activate
+```
 
 Last, run the main file:
 
-`python calculator.py #add > result.txt to save it in the txt`
+```bash
+python calculator.py # Add '> result.txt' to save it in the txt
+```
