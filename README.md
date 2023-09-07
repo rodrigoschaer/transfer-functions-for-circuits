@@ -16,4 +16,5 @@ Last, run the main file:
 
 ```bash
 python calculator.py # Add '> result.txt' to save it in the txt
+python calculator.py > result.txt
 ```
