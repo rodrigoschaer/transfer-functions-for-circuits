@@ -1,43 +1,60 @@
-from sympy import symbols, Eq
+from sympy import symbols, Eq, solve
 
 class CircuitModel:
-    def __init__(self, num_nodes):
+    def __init__(self):
+        self.num_nodes = None
+        self.node_voltages = None
+        self.component_currents = None
+        self.component_equations = []
+        self.node_equations = []
+        self.all_equations = []
+        self.results = {}
+
+    def create_symbolic_variables(self, num_nodes):
         self.num_nodes = num_nodes
-        self.components = []
+        self.node_voltages = [symbols(f'V{i}') for i in range(1, num_nodes + 1)]
+        self.component_currents = [symbols(f'I{i}') for i in range(1, num_nodes)]
 
     def add_component(self, component):
-        self.components.append(component)
+        component_type = component['type']
+        node1 = component['node1']
+        node2 = component['node2']
 
-    def create_symbolic_variable(self, component_name, node1, node2):
-        # Define symbolic variables for the component for the specified nodes
-        symbol = symbols(f'{component_name}_symbol_{node1}_{node2}')
-        return symbol
+        if component_type == 'resistor':
+            resistance = component['resistance']
+            voltage_drop = self.node_voltages[node1 - 1] - self.node_voltages[node2 - 1]
+            current = voltage_drop / resistance
+            self.component_equations.append(Eq(self.component_currents[node1 - 1], current))
+            self.component_equations.append(Eq(self.component_currents[node2 - 1], -current))
+        
+        elif component_type == 'capacitor':
+            capacitance = component['capacitance']
+            # Implement equations for capacitors similarly
+    
+        elif component_type == 'independent_source':
+            source_type = component['source_type']
+            value = component['value']
+            # Implement equations for independent sources similarly
 
-    def create_equation(self, component_name, node1, node2, symbol):
-        # Create a symbolic equation based on component type (modify as needed)
-        if component_name == 'resistor':
-            V1, V2, I = symbols(f'V{node1} V{node2} I')
-            equation = Eq(V1 - V2, symbol * I)
-            return equation
+        elif component_type == 'dependent_source':
+            source_type = component['source_type']
+            gain = component['gain']
+            # Implement equations for dependent sources similarly
 
-    def generate_symbolic_data(self):
-        # Generate symbolic variables and equations for all components and node pairs
-        symbolic_data = []
+    # Add support for other component types as needed
 
-        for component in self.components:
-            name = component['name']
-            for node1 in range(1, self.num_nodes + 1):
-                for node2 in range(1, self.num_nodes + 1):
-                    if node1 != node2:
-                        symbol = self.create_symbolic_variable(name, node1, node2)
-                        equation = self.create_equation(name, node1, node2, symbol)
+    def apply_kcl(self):
+        for i in range(self.num_nodes):
+            node_currents = [self.component_currents[j] for j in range(self.num_nodes) if j != i]
+            sum_currents = sum(node_currents)
+            self.node_equations.append(Eq(sum_currents, 0))
 
-                        symbolic_data.append({
-                            'name': name,
-                            'node1': node1,
-                            'node2': node2,
-                            'symbol': symbol,
-                            'equation': equation
-                        })
+    def generate_equations(self):
+        self.all_equations = self.component_equations + self.node_equations
 
-        return symbolic_data
+    def solve_circuit(self):
+        node_voltage_solutions = solve(self.all_equations, self.node_voltages)
+        self.results['node_voltages'] = {str(node): node_voltage_solutions[node] for node in self.node_voltages}
+
+    def get_results(self):
+        return self.results
