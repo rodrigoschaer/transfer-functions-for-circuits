@@ -1,15 +1,17 @@
 from sympy import symbols, Eq, solve
 
 class CircuitModel:
+    # Inicializar as variáveis
     def __init__(self):
-        self.num_nodes = None
-        self.node_voltages = None
-        self.component_currents = None
+        self.num_nodes = 0
+        self.node_voltages = ''
+        self.component_currents = []
         self.component_equations = []
         self.node_equations = []
         self.all_equations = []
         self.results = {}
 
+    # Método para criar as variáveis de circuito
     def create_symbolic_variables(self, num_nodes):
         self.num_nodes = num_nodes
         self.node_voltages = [symbols(f'V{i}') for i in range(1, num_nodes + 1)]
@@ -20,28 +22,22 @@ class CircuitModel:
         node1 = component['node1']
         node2 = component['node2']
 
-        if component_type == 'resistor':
-            resistance = component['resistance']
-            voltage_drop = self.node_voltages[node1 - 1] - self.node_voltages[node2 - 1]
-            current = voltage_drop / resistance
-            self.component_equations.append(Eq(self.component_currents[node1 - 1], current))
-            self.component_equations.append(Eq(self.component_currents[node2 - 1], -current))
-        
-        elif component_type == 'capacitor':
-            capacitance = component['capacitance']
-            # Implement equations for capacitors similarly
-    
-        elif component_type == 'independent_source':
-            source_type = component['source_type']
-            value = component['value']
-            # Implement equations for independent sources similarly
+        match component_type:
+            case 'resistor':
+                resistance = component['resistance']
+                # Implementar comportamento para resistência
+            
+            case 'capacitor':
+                capacitance = component['capacitance']
+                # Implementar equação para a capacitância 
+            
+            case 'indepentent_source':
+                source_type = component['source_type']
+                # Implementar equação para fonte independente
 
-        elif component_type == 'dependent_source':
-            source_type = component['source_type']
-            gain = component['gain']
-            # Implement equations for dependent sources similarly
-
-    # Add support for other component types as needed
+            case 'dependent_source':
+                source_type = component['source_type']
+                # Implementar equação para fonte dependente  
 
     def apply_kcl(self):
         for i in range(self.num_nodes):
