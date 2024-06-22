@@ -1,3 +1,5 @@
+import sympy as sp
+
 def create_sympy_symbols(components):
     symbols = {}
     

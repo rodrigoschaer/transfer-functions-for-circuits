@@ -18,7 +18,7 @@ symbols = create_sympy_symbols(components)
 node_voltages, voltage_source_currents = create_node_voltages(nodes, components)
 
 # Step 4: Components connections through nodes
-node_connections = create_node_connections(components)
+node_connections = create_node_connections(components, nodes)
 
 # Step 5: KCL equations
 kcl_equations = write_kcl_equations(node_connections, node_voltages, sp.symbols('s'), symbols)

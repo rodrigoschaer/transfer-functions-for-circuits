@@ -1,3 +1,5 @@
+import sympy as sp
+
 def create_node_voltages(nodes, components):
     node_voltages = {}
     dependent_nodes_voltage = {}

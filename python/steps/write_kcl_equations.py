@@ -1,3 +1,7 @@
+from collections import defaultdict
+import sympy as sp
+
+
 def current_through_resistor(v1, v2, resistance):
     return (v1 - v2) / resistance
 

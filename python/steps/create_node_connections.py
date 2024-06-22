@@ -1,4 +1,4 @@
-def create_node_connections(components):
+def create_node_connections(components, nodes):
     node_connections = {node: [] for node in nodes}
     for comp_type, components_list in components.items():
         for comp in components_list:
