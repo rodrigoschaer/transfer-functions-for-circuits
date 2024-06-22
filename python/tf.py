@@ -15,7 +15,7 @@ components, nodes = parse_spice_netlist(NETLIST)
 symbols = create_sympy_symbols(components)
 
 # Step 3: Create node voltages symbolic variables
-node_voltages, voltage_source_currents = create_node_voltages(nodes, components)
+node_voltages, dependent_nodes_voltage = create_node_voltages(nodes, components)
 
 # Step 4: Components connections through nodes
 node_connections = create_node_connections(components, nodes)
