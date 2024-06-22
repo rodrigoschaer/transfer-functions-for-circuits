@@ -53,7 +53,6 @@ def parse_spice_netlist(netlist):
                     components['current_sources'].append((component, component_nodes, value))
     
     return components, nodes
-
 components, nodes = parse_spice_netlist(netlist)
 
 # Step 2: Create symbolic variables
@@ -71,7 +70,6 @@ def create_sympy_symbols(components):
                 symbols[name] = sp.symbols(gain) * sp.symbols(f'{str(node).upper()}')
     
     return symbols
-
 symbols = create_sympy_symbols(components)
 
 # Step 3: Create node voltages symbolic variables
@@ -91,6 +89,7 @@ def create_node_voltages_and_currents(nodes, components):
             dependent_nodes_voltage[node] = sp.symbols(f'{str(node).upper()}')
     
     return node_voltages, dependent_nodes_voltage
+node_voltages, voltage_source_currents = create_node_voltages_and_currents(nodes, components)
 
 # Step 4: Components through nodes
 def get_node_connections(components):
@@ -102,11 +101,9 @@ def get_node_connections(components):
                 if node in node_connections:
                     node_connections[node].append((name, comp_nodes, value))
     return node_connections
-
-node_voltages, voltage_source_currents = create_node_voltages_and_currents(nodes, components)
 node_connections = get_node_connections(components)
 
-# Step 6: KCL equations
+# Step 5: KCL equations
 def current_through_resistor(v1, v2, resistance):
     return (v1 - v2) / resistance
 
@@ -159,7 +156,6 @@ def write_kcl_equations(node_connections, node_voltages, s, symbols):
 
     return kcl_equations
 
-# Generate the KCL equations
 kcl_equations = write_kcl_equations(node_connections, node_voltages, sp.symbols('s'), symbols)
 print("\n Step 6: KCL Equations:")
 for eq in kcl_equations.values():
