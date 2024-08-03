@@ -1,4 +1,3 @@
-from collections import defaultdict
 import sympy as sp
 from assets.netlist import NETLIST
 from steps.create_node_connections import create_node_connections
@@ -21,7 +20,9 @@ node_voltages, dependent_nodes_voltage = create_node_voltages(nodes, components)
 node_connections = create_node_connections(components, nodes)
 
 # Step 5: KCL equations
-kcl_equations = write_kcl_equations(node_connections, node_voltages, sp.symbols('s'), symbols)
+kcl_equations = write_kcl_equations(
+    node_connections, node_voltages, sp.symbols("s"), symbols
+)
 
 print("\nKCL Equations:")
 for eq in kcl_equations.values():
