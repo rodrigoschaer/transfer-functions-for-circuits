@@ -1,9 +1,14 @@
-def create_node_connections(components, nodes):
+def create_nodes_to_components_connections(components, nodes):
     node_connections = {node: [] for node in nodes}
-    for comp_type, components_list in components.items():
-        for comp in components_list:
-            name, comp_nodes, value = comp
-            for node in comp_nodes:
+    for component_type in components:
+
+        components_list = components[component_type]
+        for component_name in components_list:
+            component_nodes = components_list[component_name]["nodes"]
+            component_value = components_list[component_name]["value"]
+            for node in component_nodes:
                 if node in node_connections:
-                    node_connections[node].append((name, comp_nodes, value))
+                    node_connections[node].append(
+                        (component_name, component_nodes, component_value)
+                    )
     return node_connections
