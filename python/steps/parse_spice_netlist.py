@@ -3,14 +3,15 @@ import re
 
 def parse_spice_netlist(netlist):
     components = {
-        "resistors": [],
-        "capacitors": [],
-        "inductors": [],
-        "voltage_sources": [],
-        "current_sources": [],
-        "dependent_sources": [],
+        "resistors": {},
+        "capacitors": {},
+        "inductors": {},
+        "voltage_sources": {},
+        "current_sources": {},
+        "dependent_sources": {},
     }
     nodes = set()
+    components_set = set()
 
     lines = netlist.split("\n")
 
@@ -18,35 +19,44 @@ def parse_spice_netlist(netlist):
         line = line.strip()
         if line and not line.startswith("*"):
             parts = re.split(r"\s+", line)
-            component = parts[0]
-            component_nodes = parts[1:-1]
-            value = parts[-1]
 
+            component = parts[0]
+            components_set.add(component)
+
+            component_nodes = parts[1:-1]
             nodes.update(component_nodes)
 
+            value = parts[-1]
+
             if component.startswith("R"):
-                components["resistors"].append((component, component_nodes, value))
+                components["resistors"].update(
+                    {component: {"value": value, "nodes": component_nodes}}
+                )
             elif component.startswith("C"):
-                components["capacitors"].append((component, component_nodes, value))
+                components["capacitors"].update(
+                    {component: {"value": value, "nodes": component_nodes}}
+                )
             elif component.startswith("L"):
-                components["inductors"].append((component, component_nodes, value))
+                components["inductors"].update(
+                    {component: {"value": value, "nodes": component_nodes}}
+                )
             elif component.startswith("V"):
                 if "*" in value:
-                    components["dependent_sources"].append(
-                        (component, component_nodes, value)
+                    components["dependent_sources"].update(
+                        {component: {"value": value, "nodes": component_nodes}}
                     )
                 else:
-                    components["voltage_sources"].append(
-                        (component, component_nodes, value)
+                    components["voltage_sources"].update(
+                        {component: {"value": value, "nodes": component_nodes}}
                     )
             elif component.startswith("I"):
                 if "*" in value:
-                    components["dependent_sources"].append(
-                        (component, component_nodes, value)
+                    components["dependent_sources"].update(
+                        {component: {"value": value, "nodes": component_nodes}}
                     )
                 else:
-                    components["current_sources"].append(
-                        (component, component_nodes, value)
+                    components["current_sources"].update(
+                        {component: {"value": value, "nodes": component_nodes}}
                     )
 
-    return components, nodes
+    return components, components_set, nodes
