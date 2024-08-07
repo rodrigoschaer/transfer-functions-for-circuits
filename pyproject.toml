@@ -23,7 +23,3 @@ include_trailing_comma = true
 force_grid_wrap = 0
 use_parentheses = true
 skip = [".gitignore", ".dockerignore", "env", "venv"]
-
-[tool.flake8]
-max-line-length = 100
-exclude = ".git,__pycache__,docs/source/conf.py,old,build,dist,venv,env,.venv,*.sql"
