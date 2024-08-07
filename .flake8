@@ -1,0 +1,7 @@
+# .flake8
+
+# flake8 linter configuration file
+[flake8]
+max-line-length = 100
+extend-ignore = E501
+exclude = .git,__pycache__,docs/source/conf.py,old,build,dist,venv,env,.venv,*.sql,__init__.py
