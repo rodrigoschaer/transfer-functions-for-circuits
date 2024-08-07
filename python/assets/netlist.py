@@ -6,3 +6,14 @@ C_PI V_IN V_E C_PI
 R_E V_E 0 R_E
 I1 0 V_IN I_IN
 """
+DIFFERENTIAL_ACM = """
+C4 V_IN_DIF 0 C4
+C5+CL V_OUT 0 C5+CL
+I1 V_IN_DIF 0 gm_g3+gm_d3*(V_IN_DIF)
+I2 V_IN_DIF 0 gm_g1*(V_IN_DIF)
+I3 V_IN_DIF 0 gm_d1*(V_IN_DIF)
+I4 V_OUT 0 gm_g1*(-V_IN_DIF)
+I5 V_OUT 0 gm_d1*(V_OUT)
+I6 V_OUT 0 gm_g3*(V_IN_DIF)
+I7 V_OUT 0 gm_d3*(V_OUT)
+"""
