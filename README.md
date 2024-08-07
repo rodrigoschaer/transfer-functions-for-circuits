@@ -12,13 +12,13 @@ To run the application, follow these steps:
 # Current and next steps
 
 At first a got a little bit ahead of myself and underestimated the complexity for the app's core main task, now I'm starting fresh from the basics:
-[x] Get a transfer function small signal model amplifier circuit
+- [x] Get a transfer function small signal model amplifier circuit
 
 Next steps:
 
-- [] Find a way of putting the answer in a polynomial format;
-- [] Create a way of passing the analyzed circuit via spice file;
-- [] Maybe make a LTSpice plugin (this one is really long term)
+- [ ] Find a way of putting the answer in a polynomial format;
+- [ ] Create a way of passing the analyzed circuit via spice file;
+- [ ] Maybe make a LTSpice plugin (this one is really long term)
 
 # How to Setup this project
 
