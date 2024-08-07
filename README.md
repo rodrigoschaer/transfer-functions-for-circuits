@@ -20,20 +20,10 @@ This project is licensed under the MIT License.
 
 ## How to Setup this project
 
-First, create the local environment using:
+Run the following commands:
 
 ```bash
-python -m venv env
-```
-
-Then, source the environment to use command line:
-
-```bash
-source env/bin/activate
-```
-
-Last, run the app file:
-
-```bash
-flask run
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 ```
