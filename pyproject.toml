@@ -1,0 +1,29 @@
+# pyproject.toml
+[tool.black]
+line-length = 100
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | \venv
+  | venv
+  | _build
+  | buck-out
+  | build
+  | dist 
+)/
+'''
+
+[tool.isort]
+line_length = 100
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+skip = [".gitignore", ".dockerignore", "env", "venv"]
+
+[tool.flake8]
+max-line-length = 100
+exclude = ".git,__pycache__,docs/source/conf.py,old,build,dist,venv,env,.venv,*.sql"
