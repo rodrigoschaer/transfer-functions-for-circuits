@@ -1,6 +1,6 @@
 from collections import defaultdict
-import sympy as sp
 
+import sympy as sp
 from utils.symbolic_expression import symbolic_expression
 
 
@@ -21,9 +21,7 @@ def create_component_symbols(components, node_symbols, nodes):
                 component_value = components_list[component_name]["value"]
 
                 gain = component_value.split("*")[0]
-                symbolic_expr, symbolic_nodes = symbolic_expression(
-                    component_value.split("*")[1]
-                )
+                symbolic_expr, symbolic_nodes = symbolic_expression(component_value.split("*")[1])
 
                 for var in symbolic_nodes:
                     if var not in nodes:

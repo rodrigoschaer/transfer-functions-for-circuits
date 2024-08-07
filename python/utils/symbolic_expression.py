@@ -1,5 +1,6 @@
-import sympy as sp
 import re
+
+import sympy as sp
 
 
 def symbolic_expression(expression):

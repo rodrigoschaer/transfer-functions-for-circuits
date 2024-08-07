@@ -58,9 +58,7 @@ def write_kcl_equations(node_connections, node_voltages, symbols):
                     node_current += symbols[comp_name]
                 else:
                     node_current -= (
-                        symbols[comp_name]
-                        if comp_name in symbols
-                        else sp.symbols(comp_name)
+                        symbols[comp_name] if comp_name in symbols else sp.symbols(comp_name)
                     )
 
         if node_current != 0:

@@ -1,13 +1,11 @@
 import sympy as sp
-
 from assets.netlist import COMMON_EMITTER
-from steps.parse_spice_netlist import parse_spice_netlist
 from steps.calculate_tf_from_kcl import calculate_tf_from_kcl
 from steps.create_node_connections import create_nodes_to_components_connections
 from steps.create_node_voltages import create_node_symbols
 from steps.create_sympy_symbols import create_component_symbols
+from steps.parse_spice_netlist import parse_spice_netlist
 from steps.write_kcl_equations import write_kcl_equations
-
 
 # Step 1: Parse the input component-wise and node-wise
 components, components_set, nodes = parse_spice_netlist(COMMON_EMITTER)
