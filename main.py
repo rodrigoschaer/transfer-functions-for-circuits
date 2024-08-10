@@ -2,11 +2,10 @@ import re
 
 import sympy as sp
 
-from assets.netlist import DIFFERENTIAL_ACM
+from assets.netlist import COMMON_EMITTER
 from utils.symbolic_expression import symbolic_expression
 
 
-# Step 1: Parse the input component-wise and node-wise
 def parse_spice_netlist(netlist):
     components = {
         "resistors": {},
@@ -68,10 +67,6 @@ def parse_spice_netlist(netlist):
     return components, components_set, nodes
 
 
-components, components_set, nodes = parse_spice_netlist(DIFFERENTIAL_ACM)
-
-
-# Step 2: Create node voltages symbolic variables
 def create_node_symbols(nodes):
     node_symbols = {}
 
@@ -83,10 +78,6 @@ def create_node_symbols(nodes):
     return node_symbols
 
 
-node_symbols = create_node_symbols(nodes)
-
-
-# Step 3: Create symbolic variables
 def create_component_symbols(components, node_symbols, nodes):
     component_symbols = {}
     toIgnore = ["voltage_sources"]
@@ -115,10 +106,6 @@ def create_component_symbols(components, node_symbols, nodes):
     return component_symbols
 
 
-component_symbols = create_component_symbols(components, node_symbols, nodes)
-
-
-# Step 4: Components connections through nodes
 def create_nodes_to_components_connections(components, nodes):
     node_connections = {node: [] for node in nodes}
     for component_type in components:
@@ -135,11 +122,7 @@ def create_nodes_to_components_connections(components, nodes):
     return node_connections
 
 
-node_connections = create_nodes_to_components_connections(components, nodes)
-
-
-# Step 5: KCL equations
-def write_kcl_equations(node_connections, node_voltages, symbols):
+def write_kcl_equations(node_connections, node_voltages, symbols, s):
     def current_through_resistor(v1, v2, resistance):
         return (v1 - v2) / resistance
 
@@ -149,7 +132,6 @@ def write_kcl_equations(node_connections, node_voltages, symbols):
     def current_through_inductor(v1, v2, inductance, s):
         return (v1 - v2) / (s * inductance)
 
-    s = sp.symbols("s")
     kcl_equations = {}
     for node, connections in node_connections.items():
         if node == "0":
@@ -230,23 +212,63 @@ def write_kcl_equations(node_connections, node_voltages, symbols):
     return kcl_equations
 
 
-kcl_equations = write_kcl_equations(node_connections, node_symbols, component_symbols)
+def calculate_tf_from_kcl(kcl_equations, input, output, node_symbols, s):
+    eq_list = list(kcl_equations.values())
+    solutions = sp.solve(eq_list, node_symbols)
+    transfer_function = sp.simplify(solutions[output] / solutions[input])
+
+    def normalize_transfer_function(tf: sp.Symbol) -> sp.Symbol:
+        rationalized_tf = tf.ratsimp().collect(s)
+        numerator, denominator = sp.fraction(rationalized_tf)
+
+        poly = sp.Poly(denominator, s).as_expr()
+        degree = sp.degree(poly, gen=s)
+
+        terms = dict(i.as_independent(s)[::-1] for i in sp.Add.make_args(poly))
+
+        numerator_normalized = (numerator / terms[s**degree]).ratsimp().collect(s)
+        # print("Numerator (N(s)) after normalization:")
+        # sp.pprint(numerator_normalized)
+
+        denominator_normalized = (denominator / terms[s**degree]).ratsimp().collect(s)
+        # print("\nDenominator (D(s)) after normalization:")
+        # sp.pprint(denominator_normalized)
+        return numerator_normalized, denominator_normalized
+
+    numerator, denominator = normalize_transfer_function(transfer_function)
+    H_s = sp.Mul(numerator, sp.Pow(denominator, -1), evaluate=False)
+
+    print("\nLiteral Transfer Function H(s):")
+    sp.pprint(transfer_function)
+    print("\nNormalized Transfer Function H(s):")
+    sp.pprint(H_s, use_unicode=True)
+    sp.pprint(numerator / denominator)
+
+    return numerator / denominator
+
+
+# Step 0: define reference for laplace variable
+s = sp.symbols("s")
+
+
+# Step 1: Parse the input component-wise and node-wise
+components, components_set, nodes = parse_spice_netlist(COMMON_EMITTER)
+
+# Step 2: Create node voltages symbolic variables
+node_symbols = create_node_symbols(nodes)
+
+# Step 3: Create symbolic variables
+component_symbols = create_component_symbols(components, node_symbols, nodes)
+
+# Step 4: Components connections through nodes
+node_connections = create_nodes_to_components_connections(components, nodes)
+
+# Step 5: KCL equations
+kcl_equations = write_kcl_equations(node_connections, node_symbols, component_symbols, s)
 print("\nKCL Equations:")
 for node, eq in kcl_equations.items():
     print(node)
     sp.pprint(eq)
 
-
 # Step 6: calculate the transfer function
-def calculate_tf_from_kcl(kcl_equations, input, output, node_symbols):
-    eq_list = list(kcl_equations.values())
-    solutions = sp.solve(eq_list, node_symbols)
-    transfer_function = sp.simplify(solutions[output] / solutions[input])
-    return transfer_function
-
-
-transfer_function = calculate_tf_from_kcl(
-    kcl_equations, node_symbols["V_IN_DIF"], node_symbols["V_OUT"], node_symbols
-)
-print("\nLiteral Transfer Function:")
-sp.pprint(transfer_function)
+calculate_tf_from_kcl(kcl_equations, node_symbols["V_IN"], node_symbols["V_OUT"], node_symbols, s)
