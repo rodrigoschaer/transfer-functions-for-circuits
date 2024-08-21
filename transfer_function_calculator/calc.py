@@ -30,9 +30,10 @@ def calculate_transfer_function(netlist):
         sp.pprint(eq)
 
     # Step 6: calculate the transfer function
-    calculate_tf_from_kcl(
+    tf = calculate_tf_from_kcl(
         kcl_equations, node_symbols["V_IN"], node_symbols["V_OUT"], node_symbols, s
     )
+    return tf
 
 
 def parse_spice_netlist(netlist):
@@ -274,4 +275,4 @@ def calculate_tf_from_kcl(kcl_equations, input, output, node_symbols, s):
     sp.pprint(H_s, use_unicode=True)
     sp.pprint(numerator / denominator)
 
-    return H_s, transfer_function
+    return H_s
