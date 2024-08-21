@@ -15,7 +15,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "tf-calc=main:tf_calc",
+            "tf-calc=transfer_function_calculator.main:tf_calc",  # Update path to main.py
         ],
     },
     classifiers=[
