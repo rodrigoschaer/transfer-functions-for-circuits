@@ -1,0 +1,4 @@
+C V_OUT 0 C
+R V_IN V_RL R
+L V_RL V_OUT L
+I 0 V_IN I

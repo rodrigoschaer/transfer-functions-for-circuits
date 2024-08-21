@@ -3,8 +3,7 @@ import os
 import click
 import sympy as sp
 
-from transfer_function_calculator.assets.netlist import COMMON_EMITTER
-from transfer_function_calculator.calc import calculate_transfer_function
+from transfer_function_calculator.calculator import calculate_transfer_function
 
 
 @click.command()
@@ -23,23 +22,18 @@ def tf_calc(file_type, file_path):
             formatted_content = format_content(content)
         else:
             raise click.BadParameter("You must specify either --spice or --text.")
-        print(formatted_content)
 
-        tf = calculate_transfer_function(COMMON_EMITTER)
-        print_asc_box(tf)
+        tf = calculate_transfer_function(formatted_content)
+        print("\nNormalized Transfer Function H(s):")
+        sp.pprint(tf, use_unicode=True)
 
     except Exception as e:
         click.echo(f"Error: {str(e)}", err=True)
 
 
 def format_content(content):
-    formatted_content = f"\n{content}"
+    formatted_content = f"{content}"
     return formatted_content
-
-
-def print_asc_box(tf):
-    print("\nNormalized Transfer Function H(s):")
-    sp.pprint(tf, use_unicode=True)
 
 
 if __name__ == "__main__":
