@@ -1,0 +1,6 @@
+R_PI V_IN V_E R_PI
+I2 V_OUT V_E gm*(V_IN-V_E)
+R_C V_OUT 0 R_C
+C_PI V_IN V_E C_PI
+R_E V_E 0 R_E
+I1 0 V_IN I_IN
