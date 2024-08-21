@@ -3,8 +3,8 @@ import os
 import click
 import sympy as sp
 
-from assets.netlist import COMMON_EMITTER
-from calc import calculate_transfer_function
+from transfer_function_calculator.assets.netlist import COMMON_EMITTER
+from transfer_function_calculator.calc import calculate_transfer_function
 
 
 @click.command()
@@ -21,13 +21,11 @@ def tf_calc(file_type, file_path):
         with open(file_path, "r") as file:
             content = file.read()
 
-        if file_type == "spice":
-            formatted_content = format_spice_content(content)
-        elif file_type == "text":
-            formatted_content = format_text_content(content)
+        if file_type == "spice" or file_type == "text":
+            formatted_content = format_content(content)
         else:
             raise click.BadParameter("You must specify either --spice or --text.")
-
+        print(formatted_content)
         # Pass the processed content to calc.py
         tf = calculate_transfer_function(COMMON_EMITTER)
 
@@ -38,17 +36,10 @@ def tf_calc(file_type, file_path):
         click.echo(f"Error: {str(e)}", err=True)
 
 
-def format_spice_content(content):
+def format_content(content):
     """Format the content of a SPICE file to a Python string."""
     # Implement the logic to parse and format SPICE content
     formatted_content = f"\n{content}"
-    return formatted_content
-
-
-def format_text_content(content):
-    """Format the content of a text file to a Python string."""
-    # Implement the logic to parse and format text content
-    formatted_content = f"{content}"
     return formatted_content
 
 

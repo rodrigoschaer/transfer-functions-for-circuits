@@ -2,7 +2,7 @@ import re
 
 import sympy as sp
 
-from utils.symbolic_expression import symbolic_expression
+from transfer_function_calculator.utils.symbolic_expression import symbolic_expression
 
 
 def calculate_transfer_function(netlist):

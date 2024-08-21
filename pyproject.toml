@@ -24,7 +24,4 @@ force_grid_wrap = 0
 use_parentheses = true
 skip = [".gitignore", ".dockerignore", "env", "venv"]
 
-# App CLI entrypoint
-[tool.poetry.scripts]
-tf-calc = "main:tf_calc"
 
