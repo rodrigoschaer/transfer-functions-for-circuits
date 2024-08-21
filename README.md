@@ -19,7 +19,7 @@ Next steps:
 
 - [x] Find a way of putting the answer in a polynomial format;
 - [x] Create a way of passing the analyzed circuit via spice file;
-- [ ] Make it as a CLI tool
+- [x] Make it as a CLI tool
 - [ ] Make it to work as a python notebook
 - [ ] Maybe make a LTSpice plugin (this one is really long term)
 
