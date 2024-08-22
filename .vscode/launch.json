@@ -1,0 +1,11 @@
+{
+  "configurations": [
+    {
+      "name": "Python Debugger: Python File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/transfer_function_calculator/main.py",
+      "args": ["-t", "./transfer_function_calculator/samples/circ.txt"]
+    }
+  ]
+}
