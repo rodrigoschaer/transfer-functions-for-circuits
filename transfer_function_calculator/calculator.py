@@ -2,8 +2,6 @@ import re
 
 import sympy as sp
 
-from transfer_function_calculator.utils.symbolic_expression import symbolic_expression
-
 
 def calculate_transfer_function(netlist):
 
@@ -88,10 +86,11 @@ def parse_spice_netlist(netlist):
                 # G1 V- V+ dp+ dp- G
                 component_nodes = [parts[1], parts[2]]
                 nodes.update(component_nodes)
-                value = (parts[3], parts[4])
+                dependency = (parts[3], parts[4])
+                gain = parts[-1]
 
                 components["dependent_sources"].update(
-                    {component: {"value": value, "nodes": component_nodes}}
+                    {component: {"value": gain, "nodes": component_nodes, "dependency": dependency}}
                 )
 
     return components, nodes
@@ -122,16 +121,18 @@ def create_component_symbols(components, node_symbols, nodes):
                 component_symbols[component_name] = sp.symbols(component_name)
 
             elif component_type == "dependent_sources":
-                component_value = components_list[component_name]["value"]
+                gain = sp.symbols(components_list[component_name]["value"])
 
-                gain = component_value.split("*")[0]
-                symbolic_expr, symbolic_nodes = symbolic_expression(component_value.split("*")[1])
+                dependency_nodes = components_list[component_name]["dependency"]
+                start, end = dependency_nodes
 
-                for var in symbolic_nodes:
-                    if var not in nodes:
-                        node_symbols[str(var)] = sp.symbols(var)
+                if start not in node_symbols or end not in node_symbols:
+                    raise Exception(
+                        "Failed to parse dependent source. The provided nodes were not found in the circuit."
+                    )
 
-                component_symbols[component_name] = sp.symbols(gain) * (symbolic_expr)
+                dependent_source_expression = gain * (node_symbols[start] - node_symbols[end])
+                component_symbols[component_name] = dependent_source_expression
 
     return component_symbols
 
@@ -216,7 +217,7 @@ def write_kcl_equations(node_connections, node_voltages, symbols, s):
                         s,
                     )
                 )
-            elif comp_name.startswith("I"):
+            elif comp_name.startswith("I") or comp_name.startswith("G"):
                 if comp_nodes[0] == node:
                     node_current += (
                         symbols[comp_name] if comp_name in symbols else sp.symbols(comp_name)
@@ -225,7 +226,7 @@ def write_kcl_equations(node_connections, node_voltages, symbols, s):
                     node_current -= (
                         symbols[comp_name] if comp_name in symbols else sp.symbols(comp_name)
                     )
-            elif comp_name.startswith("V"):
+            elif comp_name.startswith("V") or comp_name.startswith("E"):
                 # Independent voltage source will be treated as a current source of equal contribution
                 if comp_nodes[0] == node:
                     node_current += (
