@@ -248,13 +248,12 @@ def normalize_transfer_function(tf, s):
     rationalized_tf = tf.ratsimp().collect(s)
     numerator, denominator = sp.fraction(rationalized_tf)
 
-    poly = sp.Poly(denominator, s).as_expr()
-    degree = sp.degree(poly, gen=s)
+    leading_coeff = sp.LC(denominator, s)
+    numerator_normalized = (numerator / leading_coeff).collect(s)
+    denominator_normalized = (denominator / leading_coeff).collect(s)
 
-    terms = dict(i.as_independent(s)[::-1] for i in sp.Add.make_args(poly))
-
-    numerator_normalized = (numerator / terms[s**degree]).ratsimp().collect(s)
-    denominator_normalized = (denominator / terms[s**degree]).ratsimp().collect(s)
+    numerator_normalized = sp.collect(sp.expand(numerator_normalized), s)
+    denominator_normalized = sp.collect(sp.expand(denominator_normalized), s)
 
     return numerator_normalized, denominator_normalized
 
