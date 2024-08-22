@@ -1,0 +1,6 @@
+R_PI V_IN V_E R_PI
+R_C V_OUT 0 R_C
+C_PI V_IN V_E C_PI
+R_E V_E 0 R_E
+I_IN 0 V_IN I_IN
+G V_E V_OUT V_IN V_E G
