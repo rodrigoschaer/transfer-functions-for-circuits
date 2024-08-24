@@ -97,12 +97,29 @@ def parse_spice_netlist(netlist):
 
 
 def create_node_symbols(nodes):
+    def parse_symbolic_expression(expression):
+        expression = expression.strip("()")
+
+        variables = re.findall(r"\b[A-Za-z_][A-Za-z0-9_]*\b", expression)
+        symbolic_vars = {var: sp.symbols(var) for var in variables}
+
+        symbolic_expr = expression
+        for var in symbolic_vars:
+            symbolic_expr = symbolic_expr.replace(var, f'symbolic_vars["{var}"]')
+
+        symbolic_expr = eval(symbolic_expr)
+        return symbolic_expr, symbolic_vars
+
     node_symbols = {}
 
     node_symbols["0"] = 0
     for node in nodes:
         if node != "0":
-            node_symbols[node] = sp.symbols(node)
+            symbolic_expr, symbolic_vars = parse_symbolic_expression(node)
+            node_symbols[node] = symbolic_expr
+
+            for var in symbolic_vars:
+                node_symbols[var] = sp.symbols(var)
 
     return node_symbols
 
@@ -260,13 +277,16 @@ def normalize_transfer_function(tf, s):
 
 
 def calculate_tf_from_kcl(kcl_equations, input, output, node_symbols, s):
-    eq_list = list(kcl_equations.values())
-    solutions = sp.solve(eq_list, node_symbols)
+    eq_list = list([value for key, value in kcl_equations.items() if "V_IN" not in key])
+    solutions = sp.solve(eq_list, {"V_OUT": node_symbols["V_OUT"], "V_IN": node_symbols["V_IN"]})
     transfer_function = sp.simplify(solutions[output] / solutions[input])
     numerator, denominator = normalize_transfer_function(transfer_function, s)
 
     print("\nLiteral Transfer Function H(s):")
-    sp.pprint(transfer_function)
+    sp.pprint(sp.simplify(transfer_function).ratsimp().collect(s))
+    print("\n")
+    sp.print_latex(sp.simplify(transfer_function).ratsimp().collect(s))
+    print("\n")
 
     H_s = sp.Mul(numerator, sp.Pow(denominator, -1), evaluate=False)
 

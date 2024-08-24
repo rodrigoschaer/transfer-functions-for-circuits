@@ -27,6 +27,7 @@ def tf_calc(file_type, file_path):
         tf = calculate_transfer_function(formatted_content)
         print("\nNormalized Transfer Function H(s):")
         sp.pprint(tf, use_unicode=True)
+        print("\n")
 
     except Exception as e:
         click.echo(f"Error: {str(e)}", err=True)
