@@ -1,0 +1,6 @@
+R_S V_1 V_IN R_S
+C_GD V_1 0 C_GD
+C_GS V_1 V_OUT C_GS
+C_L V_OUT 0 C_L
+G1 0 V_OUT V_1 V_OUT gm
+I_IN 0 V_IN I_IN

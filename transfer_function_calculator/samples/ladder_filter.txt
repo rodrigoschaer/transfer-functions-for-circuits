@@ -1,0 +1,5 @@
+C_4 V_OUT 0 C_4
+R_1 V_RC V_IN R_2
+I_IN 0 V_IN I_IN
+R_3 V_OUT V_RC R_3
+C_2 V_RC 0 C_2
