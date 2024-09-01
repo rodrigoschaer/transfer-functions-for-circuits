@@ -285,8 +285,6 @@ def calculate_tf_from_kcl(kcl_equations, input, output, node_symbols, s):
     print("\nLiteral Transfer Function H(s):")
     sp.pprint(sp.simplify(transfer_function).ratsimp().collect(s))
     print("\n")
-    sp.print_latex(sp.simplify(transfer_function).ratsimp().collect(s))
-    print("\n")
 
     H_s = sp.Mul(numerator, sp.Pow(denominator, -1), evaluate=False)
 
