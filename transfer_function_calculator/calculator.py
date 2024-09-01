@@ -22,15 +22,12 @@ def calculate_transfer_function(netlist):
 
     # Step 5: KCL equations
     kcl_equations = write_kcl_equations(node_connections, node_symbols, component_symbols, s)
-    print("\nKCL Equations:")
-    for node, eq in kcl_equations.items():
-        print(f"\nNode: {node}\n{sp.pretty(eq)}\n")
 
     # Step 6: calculate the transfer function
     tf = calculate_tf_from_kcl(
         kcl_equations, node_symbols["V_IN"], node_symbols["V_OUT"], node_symbols, s
     )
-    return tf
+    return tf, kcl_equations
 
 
 def parse_spice_netlist(netlist):
@@ -281,10 +278,6 @@ def calculate_tf_from_kcl(kcl_equations, input, output, node_symbols, s):
     solutions = sp.solve(eq_list, {"V_OUT": node_symbols["V_OUT"], "V_IN": node_symbols["V_IN"]})
     transfer_function = sp.simplify(solutions[output] / solutions[input])
     numerator, denominator = normalize_transfer_function(transfer_function, s)
-
-    print("\nLiteral Transfer Function H(s):")
-    sp.pprint(sp.simplify(transfer_function).ratsimp().collect(s))
-    print("\n")
 
     H_s = sp.Mul(numerator, sp.Pow(denominator, -1), evaluate=False)
 

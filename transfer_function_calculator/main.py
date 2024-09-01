@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 import click
 import sympy as sp
@@ -7,22 +8,34 @@ from transfer_function_calculator.calculator import calculate_transfer_function
 
 
 @click.command()
-@click.option("-s", "--spice", "file_type", flag_value="spice", help="Process a SPICE file.")
 @click.option("-t", "--text", "file_type", flag_value="text", help="Process a text file.")
-@click.option("-n", "--net", "file_type", flag_value="net", help="Process a net file.")
-@click.argument("file_path", type=click.Path(exists=True))
-def tf_calc(file_type, file_path):
+@click.option("-j", "--jupyter", "start_jupyter", is_flag=True, help="Start a Jupyter Notebook.")
+@click.argument("file_path", type=click.Path(exists=True), required=False)
+def tf_calc(file_type, file_path, start_jupyter):
     try:
+        if start_jupyter:
+            notebook_path = "./transfer_function_calculator/notebooks/main.ipynb"
+            subprocess.Popen(
+                [
+                    "jupyter",
+                    "notebook",
+                    notebook_path,
+                    "--NotebookApp.token=''",
+                    "--NotebookApp.password=''",
+                ]
+            )
+            return
+
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"The file '{file_path}' does not exist.")
 
         with open(file_path, "r") as file:
             content = file.read()
 
-        if file_type in ["spice", "text", "net"]:
+        if file_type in ["text"]:
             formatted_content = format_content(content)
         else:
-            raise click.BadParameter("You must specify either --spice, --net or --text.")
+            raise click.BadParameter("You must specify either -t or -j.")
 
         tf = calculate_transfer_function(formatted_content)
         print("\nNormalized Transfer Function H(s):")
