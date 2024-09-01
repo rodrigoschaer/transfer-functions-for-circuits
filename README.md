@@ -20,7 +20,7 @@ Next steps:
 - [x] Find a way of putting the answer in a polynomial format;
 - [x] Create a way of passing the analyzed circuit via spice file;
 - [x] Make it as a CLI tool
-- [ ] Make it to work as a python notebook
+- [x] Make it to work as a python notebook
 - [ ] Maybe make a LTSpice plugin (this one is really long term)
 
 # How to Setup this project
@@ -31,6 +31,44 @@ Run the following commands:
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+```
+
+You can run locally or build the library:
+
+```bash
+python transfer_function_calculator/main.py -t ./transfer_function_calculator/samples/rlc.txt
+```
+
+Build:
+
+```bash
+python setup.py sdist bdist_wheel & pip install -e .
+```
+
+And run:
+
+```bash
+tf-calc -t ./transfer_function_calculator/samples/rlc.txt
+```
+
+Clean up build files and run again:
+
+```bash
+rm -rf build dist transfer_function_calculator.egg-info & python setup.py sdist bdist_wheel & pip install -e .
+```
+
+## Run Modes
+
+1. File mode, prints in terminal:
+
+```bash
+tf-calc -t ./transfer_function_calculator/samples/rlc.txt
+```
+
+2. Jupyter mode, opens interface in browser:
+
+```bash
+tf-calc -j
 ```
 
 ## License
