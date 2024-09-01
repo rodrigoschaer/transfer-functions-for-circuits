@@ -24,9 +24,7 @@ def calculate_transfer_function(netlist):
     kcl_equations = write_kcl_equations(node_connections, node_symbols, component_symbols, s)
 
     # Step 6: calculate the transfer function
-    tf = calculate_tf_from_kcl(
-        kcl_equations, node_symbols["V_IN"], node_symbols["V_OUT"], node_symbols, s
-    )
+    tf = calculate_tf_from_kcl(kcl_equations, node_symbols, s)
     return tf, kcl_equations
 
 
@@ -273,9 +271,17 @@ def normalize_transfer_function(tf, s):
     return numerator_normalized, denominator_normalized
 
 
-def calculate_tf_from_kcl(kcl_equations, input, output, node_symbols, s):
+def calculate_tf_from_kcl(kcl_equations, node_symbols, s):
+    input = node_symbols["V_IN"]
+    output = node_symbols["V_OUT"]
+
     eq_list = list([value for key, value in kcl_equations.items() if "V_IN" not in key])
-    solutions = sp.solve(eq_list, {"V_OUT": node_symbols["V_OUT"], "V_IN": node_symbols["V_IN"]})
+
+    nodes = {"V_OUT": output, "V_IN": input}
+    if "V_OUT" in node_symbols and "V_IN" in node_symbols:
+        nodes = node_symbols
+
+    solutions = sp.solve(eq_list, nodes)
     transfer_function = sp.simplify(solutions[output] / solutions[input])
     numerator, denominator = normalize_transfer_function(transfer_function, s)
 
