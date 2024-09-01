@@ -37,7 +37,7 @@ def tf_calc(file_type, file_path, start_jupyter):
         else:
             raise click.BadParameter("You must specify either -t or -j.")
 
-        tf = calculate_transfer_function(formatted_content)
+        tf, _ = calculate_transfer_function(formatted_content)
         print("\nNormalized Transfer Function H(s):")
         sp.pprint(tf, use_unicode=True)
         print("\n")
