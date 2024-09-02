@@ -271,9 +271,19 @@ def normalize_transfer_function(tf, s):
     return numerator_normalized, denominator_normalized
 
 
+def rearrange_nodes(nodes: dict) -> dict:
+    arranged = {k: v for k, v in nodes.items() if k in ["V_IN", "V_OUT"]}
+    nodes.pop("V_IN", None)
+    nodes.pop("V_OUT", None)
+    arranged.update(nodes)
+    return arranged
+
+
 def calculate_tf_from_kcl(kcl_equations: dict, node_symbols: dict, s: sp.Symbol) -> sp.Mul:
     input = sp.symbols("V_IN")
     output = sp.symbols("V_OUT")
+
+    node_symbols = rearrange_nodes(node_symbols)
 
     eq_list = [value for key, value in kcl_equations.items() if "V_IN" not in key]
 
