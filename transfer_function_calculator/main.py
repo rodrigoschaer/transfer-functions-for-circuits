@@ -42,8 +42,13 @@ def tf_calc(file_type, file_path, start_jupyter):
         sp.pprint(tf, use_unicode=True)
         print("\n")
 
+        print("\nSimplified Transfer Function H(s):")
+        sp.pprint(sp.simplify(tf).ratsimp().collect(sp.symbols("s")))
+        print("\n")
+
     except Exception as e:
         click.echo(f"Error: {str(e)}", err=True)
+        raise Exception(e)
 
 
 def format_content(content):

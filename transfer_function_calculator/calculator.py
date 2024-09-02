@@ -271,17 +271,17 @@ def normalize_transfer_function(tf, s):
     return numerator_normalized, denominator_normalized
 
 
-def calculate_tf_from_kcl(kcl_equations, node_symbols, s):
-    input = node_symbols["V_IN"]
-    output = node_symbols["V_OUT"]
+def calculate_tf_from_kcl(kcl_equations: dict, node_symbols: dict, s: sp.Symbol) -> sp.Mul:
+    input = sp.symbols("V_IN")
+    output = sp.symbols("V_OUT")
 
-    eq_list = list([value for key, value in kcl_equations.items() if "V_IN" not in key])
+    eq_list = [value for key, value in kcl_equations.items() if "V_IN" not in key]
 
-    nodes = {"V_OUT": output, "V_IN": input}
-    if "V_OUT" in node_symbols and "V_IN" in node_symbols:
-        nodes = node_symbols
+    solutions = sp.solve(eq_list, [input, output])
 
-    solutions = sp.solve(eq_list, nodes)
+    if input not in solutions or output not in solutions:
+        solutions = sp.solve(eq_list, node_symbols)
+
     transfer_function = sp.simplify(solutions[output] / solutions[input])
     numerator, denominator = normalize_transfer_function(transfer_function, s)
 
