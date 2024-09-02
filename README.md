@@ -1,6 +1,6 @@
-# Circuit Transfer Function Calculator
+# Transfer Function Calculator
 
-This project is an application for calculating transfer functions of small signal model of transistors.
+This project is an application for calculating transfer functions of linear circuits given a SPICE description.
 
 # Usage
 
@@ -21,7 +21,7 @@ Next steps:
 - [x] Create a way of passing the analyzed circuit via spice file;
 - [x] Make it as a CLI tool
 - [x] Make it to work as a python notebook
-- [ ] Maybe make a LTSpice plugin (this one is really long term)
+- [ ] Work as a LTSpice plugin (this one is really long term)
 
 # How to Setup this project
 
@@ -51,7 +51,7 @@ And run:
 tf-calc -t ./transfer_function_calculator/samples/rlc.txt
 ```
 
-Clean up build files and run again:
+If a change is made, clean up build files and run again:
 
 ```bash
 rm -rf build dist transfer_function_calculator.egg-info & python setup.py sdist bdist_wheel & pip install -e .
@@ -59,13 +59,13 @@ rm -rf build dist transfer_function_calculator.egg-info & python setup.py sdist 
 
 ## Run Modes
 
-1. File mode, prints in terminal:
+1. *Text mode, prints in terminal*. Run with a path to a txt SPICE description file.
 
 ```bash
 tf-calc -t ./transfer_function_calculator/samples/rlc.txt
 ```
 
-2. Jupyter mode, opens interface in browser:
+2. *Jupyter mode, opens interface in browser*. Runs a local server to run Jupyter as an user interface.
 
 ```bash
 tf-calc -j
