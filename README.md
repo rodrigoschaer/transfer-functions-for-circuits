@@ -1,4 +1,4 @@
-# Transfer Function Calculator
+# Transfer Function For Circuits Calculator
 
 This project is an application for calculating transfer functions of linear circuits given a SPICE description.
 
